@@ -1,7 +1,6 @@
 package components
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -146,7 +145,6 @@ func ReadTemplating() error {
 	if template_file_path == "" {
 		template_file_path = "template.open-interlocking.yml"
 	}
-	fmt.Printf("%s\n", template_file_path)
 	template_file, err := os.ReadFile(template_file_path)
 	if err != nil {
 		return err

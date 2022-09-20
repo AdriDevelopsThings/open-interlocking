@@ -70,33 +70,56 @@ func CheckConnectionSwitchesAcknowledged(connection *RailroadConnection, nextSta
 	connection.State = nextState
 }
 
-func SetConnectionSignals(connection *RailroadConnection, state bool) {
-	connection.StartingSignal.Set(state)
+func SetDistantSignals(connection *RailroadConnection, state bool) {
 	for index := range connection.StartingSignal.DistantSignals {
-		connection.StartingSignal.DistantSignals[index].Set(connection.EndingSignal.State)
+		connection.StartingSignal.DistantSignals[index].Set(state)
 	}
 	for index := range connection.Blocks {
-		for vindex := range connection.Blocks[index].DistantSignals {
-			connection.Blocks[index].DistantSignals[vindex].Set(connection.EndingSignal.State)
+		for dint := range connection.Blocks[index].DistantSignals {
+			connection.Blocks[index].DistantSignals[dint].Set(state)
 		}
 	}
+}
+
+func SetConnectionSignals(connection *RailroadConnection, state bool) {
+	connection.StartingSignal.Set(state)
+	previousConnection := GetConnectionByEndingSignal(connection.StartingSignal)
+	if previousConnection != nil {
+		SetDistantSignals(previousConnection, state)
+	}
+	if !state {
+		SetDistantSignals(connection, false)
+	}
+}
+
+func CheckDistantSignalsAcknowledged(connection *RailroadConnection) bool {
+	for _, distant_signal := range connection.EndingSignal.DistantSignals {
+		if !distant_signal.Acknowledged {
+			return false
+		}
+	}
+	for _, block := range connection.Blocks {
+		for _, distant_signal := range block.DistantSignals {
+			if !distant_signal.Acknowledged {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func CheckConnectionSignalsAcknowledged(connection *RailroadConnection, nextState RailroadConnectionState) {
 	if !connection.StartingSignal.Acknowledged {
 		return
 	}
-	for _, distant_signal := range connection.StartingSignal.DistantSignals {
-		if !distant_signal.Acknowledged {
+	previousConnection := GetConnectionByEndingSignal(connection.StartingSignal)
+	if previousConnection != nil {
+		if !CheckDistantSignalsAcknowledged(previousConnection) {
 			return
 		}
 	}
-	for _, block := range connection.Blocks {
-		for _, distant_signal := range block.DistantSignals {
-			if !distant_signal.Acknowledged {
-				return
-			}
-		}
+	if nextState == ConnectionNotSet {
+		CheckDistantSignalsAcknowledged(connection)
 	}
 	connection.State = nextState
 }
@@ -113,6 +136,15 @@ func GetConnectionByID(id string) *RailroadConnection {
 func GetConnectionBySignals(signal1 *Signal, signal2 *Signal) *RailroadConnection {
 	for index, connection := range serverRailroadConnections {
 		if connection.StartingSignal == signal1 && connection.EndingSignal == signal2 {
+			return &serverRailroadConnections[index]
+		}
+	}
+	return nil
+}
+
+func GetConnectionByEndingSignal(signal *Signal) *RailroadConnection {
+	for index, connection := range serverRailroadConnections {
+		if connection.EndingSignal == signal {
 			return &serverRailroadConnections[index]
 		}
 	}
@@ -188,6 +220,17 @@ func returnPathNotExist(fahrstrasse *RailroadPath) []*RailroadPath {
 	return []*RailroadPath{}
 }
 
+func getPathCopy(connectionPath *RailroadPath) *RailroadPath {
+	newConnection := *connectionPath
+	newConnection.Blocks = make([]*SubBlock, len(connectionPath.Blocks))
+	copy(newConnection.Blocks, connectionPath.Blocks)
+	newConnection.Switches = make([]*RailroadSwitch, len(connectionPath.Switches))
+	copy(newConnection.Switches, connectionPath.Switches)
+	newConnection.SwitchesStates = make([]bool, len(connectionPath.SwitchesStates))
+	copy(newConnection.SwitchesStates, connectionPath.SwitchesStates)
+	return &newConnection
+}
+
 func PathFinding(
 	block *SubBlock,
 	rswitch *RailroadSwitch,
@@ -235,7 +278,7 @@ func PathFinding(
 			next_switch = rswitch.PreviousSwitch
 		} else {
 			straightBlade := connection
-			bendingBlade := *connection
+			bendingBlade := getPathCopy(connection)
 			straightBlade.SwitchesStates = append(straightBlade.SwitchesStates, false)
 			d1 := false
 			if rswitch.FollowingSwitchStraightBlade != nil && rswitch.FollowingSwitchStraightBlade.PreviousSwitch != rswitch {
@@ -247,7 +290,7 @@ func PathFinding(
 			if rswitch.FollowingSwitchBendingBlade != nil && rswitch.FollowingSwitchBendingBlade.PreviousSwitch != rswitch {
 				d2 = true
 			}
-			newC2 := PathFinding(GetSubBlockFromBlock(rswitch.FollowingBlockBendingBlade, rswitch, nil), rswitch.FollowingSwitchBendingBlade, nil, find, &bendingBlade, d2)
+			newC2 := PathFinding(GetSubBlockFromBlock(rswitch.FollowingBlockBendingBlade, rswitch, nil), rswitch.FollowingSwitchBendingBlade, nil, find, bendingBlade, d2)
 			newC1 = append(newC1, newC2...)
 			return newC1
 		}
