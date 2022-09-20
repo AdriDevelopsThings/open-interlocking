@@ -240,7 +240,7 @@ func PathFinding(
 	direction bool,
 ) []*RailroadPath {
 
-	if (block != nil && block.Occupied) || (rswitch != nil && rswitch.Occupied) {
+	if (block != nil && block.Occupied) || (rswitch != nil && rswitch.Occupied) || connection.Score > 10 {
 		return returnPathNotExist(connection)
 	}
 
@@ -312,7 +312,9 @@ func PathFinding(
 			return returnPathNotExist(connection)
 		}
 	} else if next_switch != nil {
-		if next_switch.PreviousSwitch == rswitch || next_switch.PreviousSignal == signal || next_switch.PreviousBlock == block.Block {
+		if (next_switch.PreviousSwitch != nil && next_switch.PreviousSwitch == rswitch) ||
+			(next_switch.PreviousSignal != nil && next_switch.PreviousSignal == signal) ||
+			(next_switch.PreviousBlock != nil && block != nil && next_switch.PreviousBlock == block.Block) {
 			// direction = false
 			return PathFinding(nil, next_switch, nil, find, connection, false)
 		} else {
@@ -325,13 +327,11 @@ func PathFinding(
 				switchState = true
 			}
 			connection.SwitchesStates = append(connection.SwitchesStates, switchState)
-			followingBlock := GetSubBlockFromBlock(next_switch.FollowingBlockStraightBlade, next_switch, nil)
-			followingSwitch := next_switch.FollowingSwitchStraightBlade
-			if switchState {
-				followingBlock = GetSubBlockFromBlock(next_switch.FollowingBlockBendingBlade, next_switch, nil)
-				followingSwitch = next_switch.FollowingSwitchBendingBlade
+			d1 := false
+			if next_switch.PreviousSwitch != nil && (next_switch.PreviousSwitch.PreviousSwitch != nil && next_switch.PreviousSwitch.PreviousSwitch == next_switch.PreviousSwitch) {
+				d1 = true
 			}
-			return PathFinding(followingBlock, followingSwitch, nil, find, connection, true)
+			return PathFinding(GetSubBlockFromBlock(next_switch.PreviousBlock, next_switch, nil), next_switch.PreviousSwitch, nil, find, connection, d1)
 		}
 	}
 	return returnPathNotExist(connection)
