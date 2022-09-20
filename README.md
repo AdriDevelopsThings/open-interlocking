@@ -20,7 +20,7 @@ You need to create a template file in which you explain how your track diagram s
 
 Give attention to this:
 - Your distant signal names must start with 'V', your signal names must start with 'S', your railroad switch names must start with 'W', your block names must start with 'B' and the name of your subblocks must be the block name with lowercase letters added
-- After the letter V, S, W and B must be followed by a number
+- letter V, S, W and B must be followed by a number
 
 The file has the following syntax:
 
