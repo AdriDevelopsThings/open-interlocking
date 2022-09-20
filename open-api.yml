@@ -1,0 +1,280 @@
+openapi: 3.0.1
+info:
+  title: open-interlocking
+  description: An open source self hosted interlocking (simulation). For example you can use opinterlockingerk to connect it to your model railway or railway in minecraft.
+  contact:
+    email: contact@adridoesthings.com
+  license:
+    name: GNU Affero General Public License
+    url: https://www.gnu.org/licenses/agpl-3.0.de.html
+  version: 1.0.0
+
+tags:
+- name: RailroadConnection
+  description: Show, Set or delete railroad connections.
+
+- name: Components
+  description: Get the current state of a signal, distant_signal or switch and acknowledge them.
+
+components:
+  schemas:
+    Switch:
+      type: object
+      properties:
+        name:
+          type: string
+        occupied:
+          type: boolean
+        state:
+          type: boolean
+        acknowledged:
+          type: boolean
+    DistantSignal:
+      type: object
+      properties:
+        name:
+          type: string
+        state:
+          type: boolean
+        acknowledged:
+          type: boolean
+    Signal:
+      type: object
+      properties:
+        name:
+          type: string
+        state:
+          type: boolean
+        acknowledged:
+          type: boolean
+        distant_signals:
+          type: array
+          $ref: "#/components/schemas/DistantSignal"
+    ConnectionState:
+      type: integer
+      description: Read README.md to get the explaination for the state.
+    SubBlock:
+      type: object
+      properties:
+        name:
+          type: string
+        starting_signal:
+          $ref: "#/components/schemas/Signal"
+        ending_signal:
+          $ref: "#/components/schemas/Signal"
+        starting_switch:
+          $ref: "#/components/schemas/Switch"
+        ending_switch:
+          $ref: "#/components/schemas/Switch"
+        distant_signals:
+          type: array
+          items:
+            $ref: "#/components/schemas/DistantSignal"
+        occupied:
+          type: boolean
+        length:
+          type: integer
+    RailroadConnection:
+      type: object
+      properties:
+        id:
+          type: string
+        starting_signal:
+          $ref: "#/components/schemas/Signal"
+        ending_signal:
+          $ref: "#/components/schemas/Signal"
+        blocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubBlock"
+        switches:
+          type: array
+          items:
+            $ref: "#/components/schemas/Switch"
+        state:
+          $ref: "#/components/schemas/ConnectionState"
+
+paths:
+  /{kind}/{name}:
+    get:
+      summary: Get the current state of a component (signal, distant_signal or switch)
+      tags:
+        - Components
+      operationId: get_component
+      parameters:
+      - name: kind
+        in: path
+        required: true
+        schema:
+          type: string
+          description: signal, distant_signal or switch
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          example: S1
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema: 
+                type: string
+                description: \"true\" or \"false\"
+                example: "true"
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
+    post:
+      summary: Acknowledge the current state of a component (signal, distant_signal or switch)
+      tags:
+        - Components
+      operationId: acknowledge_component
+      parameters:
+      - name: kind
+        in: path
+        required: true
+        schema:
+          type: string
+          description: signal, distant_signal or switch
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          example: S1
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema: 
+                type: string
+                description: \"true\" or \"false\"
+                example: "true"
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
+  /connection/{signal1_name}/{signal2_name}:
+    get:
+      summary: Get the current state of a railroad connection
+      tags:
+        - RailroadConnection
+      operationId: get_railroad_connection
+      parameters:
+        - name: signal1_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the starting_signal of the connection
+        - name: signal2_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the ending_signal of the connection
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RailroadConnection"
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
+    post:
+      summary: Set a railroad connection between two signals.
+      tags:
+        - RailroadConnection
+      operationId: set_railroad_connection
+      parameters:
+        - name: signal1_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the starting_signal of the connection
+        - name: signal2_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the ending_signal of the connection
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RailroadConnection"
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
+        406:
+          description: RailroadConnectionApplyingError or RailroadConnectionWrongStateError
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: RailroadConnectionApplyingError or RailroadConnectionWrongStateError
+    delete:
+      summary: Desolve a railroad connections.
+      tags:
+        - RailroadConnection
+      operationId: desolve_railroad_connection
+      parameters:
+        - name: signal1_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the starting_signal of the connection
+        - name: signal2_name
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Name of the ending_signal of the connection
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RailroadConnection"
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
+        406:
+          description: RailroadConnectionWrongStateError
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: RailroadConnectionWrongStateError
+
+                
+        

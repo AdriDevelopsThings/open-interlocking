@@ -1,0 +1,115 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "additionalProperties": false,
+    "title": "A schema for open-interlocking template.",
+    "type": "object",
+    "definitions": {
+        "signal_relation": {
+            "type": "string",
+            "pattern": "(W\\d+)|(B\\d+[a-z]+)"
+        },
+        "switches_relation": {
+            "type": "string",
+            "pattern": "(W\\d+)|(S\\d+)|(B\\d+)"
+        },
+        "block_relation": {
+            "type": "string",
+            "pattern": "(W\\d+)|(S\\d+)"
+        },
+        "distant_signal": {
+            "type": "string",
+            "pattern": "V\\d+"
+        }
+    },
+    "properties": {
+        "distant_signals": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "null"
+            }
+        },
+        "signals": {
+            "type": "object",
+            "additionalProperties": {
+                "type": ["object", "null"],
+                "properties": {
+                    "distant_signals": {
+                        "type": "array",
+                        "additionalItems": {
+                            "ref": "#/definitions/distant_signal"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "switches": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "null"
+            }
+        },
+        "blocks": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "null"
+            }
+        },
+        "subblocks": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "start": {
+                        "$ref": "#/definitions/block_relation"
+                    },
+                    "end": {
+                        "$ref": "#/definitions/block_relation"
+                    },
+                    "distant_signals": {
+                        "type": "array",
+                        "additionalItems": {
+                            "$ref": "#/definitions/distant_signal"
+                        }
+                    }
+                },
+                "required": ["start", "end"]
+            }
+        },
+        "relations": {
+            "type": "object",
+            "properties": {
+                "signals": {
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "following": {
+                                "$ref": "#/definitions/signal_relation"
+                            },
+                            "previous": {
+                                "$ref": "#/definitions/signal_relation"
+                            }
+                        }
+                    }
+                },
+                "switches": {
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "previous": {
+                                "$ref": "#/definitions/switches_relation"
+                            },
+                            "following_straight_blade": {
+                                "$ref": "#/definitions/switches_relation"
+                            },
+                            "following_bending_blade": {
+                                "$ref": "#/definitions/switches_relation"
+                            }
+                        },
+                        "required": ["previous", "following_straight_blade", "following_bending_blade"]
+                    }
+                }
+            }
+        }
+    }
+}

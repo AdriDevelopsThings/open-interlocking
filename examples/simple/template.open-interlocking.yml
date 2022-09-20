@@ -1,0 +1,84 @@
+distant_signals:
+  V1:
+  V3:
+  V7:
+  V8:
+
+signals:
+  S1: 
+    distant_signals:
+      - V1
+  S2:
+  S3:
+    distant_signals:
+      - V3
+  S4:
+  S5:
+  S6:
+  S7:
+    distant_signals:
+      - V7
+  S8:
+    distant_signals:
+      - V8
+
+switches:
+  W1:
+  W2:
+
+blocks:
+  B1:
+  B2:
+  B3: 
+
+subblocks:
+  B1a:
+    start: W1
+    end: S2
+  B1b:
+    start: W2
+    end: S4
+  B2a:
+    start: W1
+    end: S6
+  B2b:
+    start: W2
+    end: S6
+  B3a:
+    start: S8
+    end:  S1
+  B3b:
+    start: W1
+    end: S7
+
+relations:
+  signals:
+    S1:
+      following: W1
+    S2:
+      following: W2
+      previous: B1a
+    S3:
+      following: W2
+    S4:
+      following: W1
+      previous: B1b
+    S5:
+      following: W2
+      previous: B2a
+    S6:
+      following: W1
+      previous: B2b
+    S7:
+      previous: B3b
+    S8:
+      following: B3a
+  switches:
+    W1:
+      previous: S1
+      following_straight_blade: B1
+      following_bending_blade: B2
+    W2:
+      previous: S3
+      following_straight_blade: B1
+      following_bending_blade: B2
