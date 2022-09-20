@@ -1,6 +1,6 @@
 # simple example
 
-View the template file here: [template.open-interlocking.yml](template.opinterlockingerk.yml)
+View the template file here: [template.open-interlocking.yml](template.open-interlocking.yml)
 
 ## Track diagram
 ![Track diagram](track_diagram.png "Track diagram")
