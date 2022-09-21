@@ -2,7 +2,7 @@ package components
 
 type Block struct {
 	Name     string `json:"name"`
-	Occupied bool   `json:"occupied"`
+	Reversed bool   `json:"reversed"`
 	Length   int    `json:"length"`
 }
 

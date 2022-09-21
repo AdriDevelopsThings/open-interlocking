@@ -23,7 +23,7 @@ components:
       properties:
         name:
           type: string
-        occupied:
+        reversed:
           type: boolean
         state:
           type: boolean
@@ -70,7 +70,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DistantSignal"
-        occupied:
+        reversed:
           type: boolean
         length:
           type: integer

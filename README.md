@@ -9,7 +9,7 @@ The language of this project is english but you could know some german words:
 | Vorsignal    | distant signal                                                                          |
 | Weiche       | railroad switch                                                                         |
 | Bloecke      | blocks (blocks are occupiable parts of a track)                                         |
-| Subbloecke   | subblocks (one subblock per block for each direction (the same block will be occupied)) |
+| Subbloecke   | subblocks (one subblock per block for each direction (the same block will be reversed)) |
 | Fahrstrasse  | a connection between two signals over railroad switches and blocks                      |
 | Gleisbild    | track diagram                                                                           |
 

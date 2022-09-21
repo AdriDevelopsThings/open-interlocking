@@ -47,11 +47,11 @@ func GenerateConnectionUUID() string {
 
 func SetConnectionBlocks(connection *RailroadConnection, state bool) {
 	for index := range connection.Blocks {
-		connection.Blocks[index].Occupied = state
+		connection.Blocks[index].Reversed = state
 	}
 
 	for index := range connection.Switches {
-		connection.Switches[index].Occupied = state
+		connection.Switches[index].Reversed = state
 	}
 }
 
@@ -240,7 +240,7 @@ func PathFinding(
 	direction bool,
 ) []*RailroadPath {
 
-	if (block != nil && block.Occupied) || (rswitch != nil && rswitch.Occupied) || connection.Score > 10 {
+	if (block != nil && block.Reversed) || (rswitch != nil && rswitch.Reversed) || connection.Score > 10 {
 		return returnPathNotExist(connection)
 	}
 
