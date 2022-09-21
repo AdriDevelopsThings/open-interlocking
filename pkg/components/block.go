@@ -1,8 +1,16 @@
 package components
 
+type ReservedType = uint
+
+const (
+	NotReserved = iota
+	Reserving
+	Reserved
+)
+
 type Block struct {
 	Name     string `json:"name"`
-	Reserved bool   `json:"reserved"`
+	Reserved uint   `json:"reserved"`
 	Occupied bool   `json:"occupied"`
 	Length   int    `json:"length"`
 }

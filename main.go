@@ -8,6 +8,7 @@ import (
 	"github.com/adridevelopsthings/open-interlocking/pkg"
 	"github.com/adridevelopsthings/open-interlocking/pkg/authorization"
 	"github.com/adridevelopsthings/open-interlocking/pkg/components"
+	"github.com/adridevelopsthings/open-interlocking/pkg/config"
 	"github.com/akamensky/argparse"
 )
 
@@ -38,6 +39,7 @@ func CheckFahrstrassenEverySecond() {
 }
 
 func main() {
+	config.LoadConfiguration()
 	parser := argparse.NewParser("open-interlocking", "An open source interlocking simulation")
 	generateAuthTokenFlag := parser.Flag("g", "generate-auth-token", &argparse.Options{})
 	permissions := parser.List("p", "generate-auth-token-permission", &argparse.Options{})

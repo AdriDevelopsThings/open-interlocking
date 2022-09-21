@@ -24,7 +24,7 @@ components:
         name:
           type: string
         reserved:
-          type: boolean
+          type: integer
         state:
           type: boolean
         acknowledged:
@@ -71,7 +71,7 @@ components:
           items:
             $ref: "#/components/schemas/DistantSignal"
         reserved:
-          type: boolean
+          type: integer
         length:
           type: integer
     RailroadConnection:

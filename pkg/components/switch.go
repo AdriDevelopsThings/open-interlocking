@@ -12,7 +12,7 @@ type RailroadSwitch struct {
 	PreviousBlock  *Block          `json:"-"`
 	PreviousSwitch *RailroadSwitch `json:"-"`
 
-	Reserved     bool `json:"reserved`
+	Reserved     uint `json:"reserved"`
 	Occupied     bool `json:"occupied"`
 	State        bool // false = straight blade; true = bending blade
 	Acknowledged bool

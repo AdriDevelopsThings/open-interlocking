@@ -39,7 +39,7 @@ func (connection *RailroadConnection) Desolve() bool {
 	if connection.checkForOccupiedBlocks() {
 		return false
 	}
-	SetConnectionBlocks(connection, false)
+	SetConnectionBlocks(connection, 1)
 	SetConnectionSignals(connection, false)
 	connection.State = ConnectionDesolvingSignals
 	return true
@@ -64,7 +64,7 @@ func GenerateConnectionUUID() string {
 	return uuid.New().String()
 }
 
-func SetConnectionBlocks(connection *RailroadConnection, state bool) {
+func SetConnectionBlocks(connection *RailroadConnection, state ReservedType) {
 	for index := range connection.Blocks {
 		connection.Blocks[index].Reserved = state
 	}
@@ -141,6 +141,12 @@ func CheckConnectionSignalsAcknowledged(connection *RailroadConnection, nextStat
 		CheckDistantSignalsAcknowledged(connection)
 	}
 	connection.State = nextState
+
+	if nextState == ConnectionSet {
+		SetConnectionBlocks(connection, 2)
+	} else {
+		SetConnectionBlocks(connection, 0)
+	}
 }
 
 func GetConnectionByID(id string) *RailroadConnection {
@@ -246,11 +252,11 @@ func GenerateConnection(signal1 *Signal, signal2 *Signal) *RailroadConnection {
 		}
 		SetConnectionSwitches(&connection, connectionPath.SwitchesStates)
 		CheckConnectionSwitchesAcknowledged(&connection, ConnectionSettingSignals)
+		SetConnectionBlocks(&connection, 1)
 		if connection.State == ConnectionSettingSignals {
 			SetConnectionSignals(&connection, true)
 			CheckConnectionSignalsAcknowledged(&connection, ConnectionSet)
 		}
-		SetConnectionBlocks(&connection, true)
 
 		serverRailroadConnections = append(serverRailroadConnections, connection)
 		return &connection
@@ -282,7 +288,7 @@ func PathFinding(
 	direction bool,
 ) []*RailroadPath {
 
-	if (block != nil && block.Reserved) || (rswitch != nil && rswitch.Reserved) || connection.Score > 10 {
+	if (block != nil && block.Reserved != 0) || (rswitch != nil && rswitch.Reserved != 0) || connection.Score > 10 {
 		return returnPathNotExist(connection)
 	}
 
