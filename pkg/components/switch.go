@@ -14,8 +14,8 @@ type RailroadSwitch struct {
 
 	Reserved     uint `json:"reserved"`
 	Occupied     bool `json:"occupied"`
-	State        bool // false = straight blade; true = bending blade
-	Acknowledged bool
+	State        bool `json:"state"` // false = straight blade; true = bending blade
+	Acknowledged bool `json:"acknowledged"`
 }
 
 func (railroad_switch *RailroadSwitch) Set(state bool) {
