@@ -69,7 +69,7 @@ relations:
 
 
 ```
-This example won't work as it's only to show how the file should be written. You want an example? Go to [examples directory](exampels).
+This example won't work as it's only to show how the file should be written. You want an example? Go to [examples directory](examples).
 
 
 Also we have a yaml schema:
