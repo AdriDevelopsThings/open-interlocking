@@ -4,11 +4,17 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/adridevelopsthings/open-interlocking/pkg/authorization"
 	"github.com/adridevelopsthings/open-interlocking/pkg/components"
 	"github.com/gorilla/mux"
 )
 
 func ConnectionDelete(w http.ResponseWriter, req *http.Request) {
+	ret := authorization.CheckAuthorization(req.Header.Get("authorization"), "connection/desolve", true)
+	if ret != 0 {
+		http.Error(w, http.StatusText(ret), ret)
+		return
+	}
 	params := mux.Vars(req)
 	signal1 := components.GetSignalByName(params["signal1"])
 	signal2 := components.GetSignalByName(params["signal2"])
@@ -43,7 +49,11 @@ func Connection(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == "POST" {
-
+		ret := authorization.CheckAuthorization(req.Header.Get("authorization"), "connection/set", true)
+		if ret != 0 {
+			http.Error(w, http.StatusText(ret), ret)
+			return
+		}
 		signal1 := components.GetSignalByName(params["signal1"])
 		signal2 := components.GetSignalByName(params["signal2"])
 		if signal1 == nil || signal2 == nil {

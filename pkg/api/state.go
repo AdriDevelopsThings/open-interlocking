@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/adridevelopsthings/open-interlocking/pkg/authorization"
 	"github.com/adridevelopsthings/open-interlocking/pkg/components"
 	"github.com/gorilla/mux"
 )
@@ -47,6 +48,11 @@ func GetState(w http.ResponseWriter, req *http.Request) {
 	name := params["name"]
 	ack := false
 	if req.Method == "POST" {
+		ret := authorization.CheckAuthorization(req.Header.Get("authorization"), "state/ack", true)
+		if ret != 0 {
+			http.Error(w, http.StatusText(ret), ret)
+			return
+		}
 		ack = true
 	}
 	state, err := getState(kind, name, ack)

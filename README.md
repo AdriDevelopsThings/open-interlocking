@@ -78,6 +78,20 @@ Also we have a yaml schema:
 
 ## Api
 
+### Authorization
+
+You must authorizate you with a Bearer token. Generate a new token by running open-interlocking with `-g -c [GIVE_THE_TOKEN_A_COMPUTER_NAME]`. You can supply a permission by adding ``-p permission`` (regex). The default permission is `.+`.
+Put the token in the ``Authorization`` header field.
+
+The following permissions are available:
+| Permission         | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| state/ack          | Acknowledge a state of a signal, distant signal or switch with POST. |
+| occupy             | Occupy blocks                                                        |
+| connection/set     | Set a connection between two signals                                 |
+| connection/desolve | Desolve a connection between two signals                             |
+
+
 There is a swagger/openapi specification: open-api.yml.
 
 | Method | Path                          | Description                                                                                              | Response                                   |

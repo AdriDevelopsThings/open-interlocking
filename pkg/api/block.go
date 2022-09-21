@@ -4,11 +4,17 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/adridevelopsthings/open-interlocking/pkg/authorization"
 	"github.com/adridevelopsthings/open-interlocking/pkg/components"
 	"github.com/gorilla/mux"
 )
 
 func UpdateBlockOccupied(w http.ResponseWriter, req *http.Request) {
+	ret := authorization.CheckAuthorization(req.Header.Get("authorization"), "occupy", true)
+	if ret != 0 {
+		http.Error(w, http.StatusText(ret), ret)
+		return
+	}
 	params := mux.Vars(req)
 
 	var from_block *components.Block
