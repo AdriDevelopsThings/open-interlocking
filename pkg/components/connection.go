@@ -35,10 +35,29 @@ type RailroadConnection struct {
 
 var serverRailroadConnections = []RailroadConnection{}
 
-func (connection *RailroadConnection) Desolve() {
+func (connection *RailroadConnection) Desolve() bool {
+	if connection.checkForOccupiedBlocks() {
+		return false
+	}
 	SetConnectionBlocks(connection, false)
 	SetConnectionSignals(connection, false)
 	connection.State = ConnectionDesolvingSignals
+	return true
+}
+
+func (connection *RailroadConnection) checkForOccupiedBlocks() bool {
+	for _, block := range connection.Blocks {
+		if block.Occupied {
+			return true
+		}
+	}
+
+	for _, rswitch := range connection.Switches {
+		if rswitch.Occupied {
+			return true
+		}
+	}
+	return false
 }
 
 func GenerateConnectionUUID() string {
@@ -47,11 +66,11 @@ func GenerateConnectionUUID() string {
 
 func SetConnectionBlocks(connection *RailroadConnection, state bool) {
 	for index := range connection.Blocks {
-		connection.Blocks[index].Reversed = state
+		connection.Blocks[index].Reserved = state
 	}
 
 	for index := range connection.Switches {
-		connection.Switches[index].Reversed = state
+		connection.Switches[index].Reserved = state
 	}
 }
 
@@ -151,6 +170,29 @@ func GetConnectionByEndingSignal(signal *Signal) *RailroadConnection {
 	return nil
 }
 
+func GetConnectionByBlockSwitch(fblock *Block, frswitch *RailroadSwitch) *RailroadConnection {
+	for index, connection := range serverRailroadConnections {
+
+		if connection.State == ConnectionSet {
+			if fblock != nil {
+				for _, block := range connection.Blocks {
+					if block.Block == fblock {
+						return &serverRailroadConnections[index]
+					}
+				}
+			}
+			if frswitch != nil {
+				for _, rswitch := range connection.Switches {
+					if rswitch == frswitch {
+						return &serverRailroadConnections[index]
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func CheckConnections() {
 	for index, connection := range serverRailroadConnections {
 		if connection.State == ConnectionSettingSwitches {
@@ -240,7 +282,7 @@ func PathFinding(
 	direction bool,
 ) []*RailroadPath {
 
-	if (block != nil && block.Reversed) || (rswitch != nil && rswitch.Reversed) || connection.Score > 10 {
+	if (block != nil && block.Reserved) || (rswitch != nil && rswitch.Reserved) || connection.Score > 10 {
 		return returnPathNotExist(connection)
 	}
 

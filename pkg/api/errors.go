@@ -17,3 +17,4 @@ func (e *OpenInterlockingError) Error() string {
 var ObjectNotFoundError = OpenInterlockingError{"Object wasn't found.", http.StatusNotFound}
 var RailroadConnectionApplyingError = OpenInterlockingError{"RailroadConnectionApplyingError", http.StatusConflict}
 var RailroadConnectionWrongStateError = OpenInterlockingError{"RailroadConnectionWrongStateError", http.StatusConflict}
+var RailroadBlockOccupiedError = OpenInterlockingError{"RailroadBlockOccupiedError", http.StatusConflict}

@@ -21,7 +21,10 @@ func ConnectionDelete(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, RailroadConnectionWrongStateError.Name, RailroadConnectionWrongStateError.Http_error)
 		return
 	}
-	connection.Desolve()
+	if !connection.Desolve() {
+		http.Error(w, RailroadBlockOccupiedError.Name, RailroadBlockOccupiedError.Http_error)
+		return
+	}
 	json.NewEncoder(w).Encode(connection)
 }
 

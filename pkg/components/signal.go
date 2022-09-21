@@ -51,3 +51,20 @@ func GetDistantSignalByName(name string) *DistantSignal {
 	}
 	return nil
 }
+
+func GetSignalByFollowingBlock(
+	from_block *Block,
+	from_switch *RailroadSwitch,
+	to_block *Block,
+	to_switch *RailroadSwitch,
+) *Signal {
+	for index, element := range signals {
+		if ((to_block != nil && element.FollowingBlock != nil && to_block == element.FollowingBlock.Block) ||
+			(to_switch != nil && to_switch == element.FollowingSwitch)) &&
+			((from_block != nil && element.PreviousBlock != nil && from_block == element.PreviousBlock.Block) ||
+				(from_switch != nil && from_switch == element.PreviousSwitch)) {
+			return &signals[index]
+		}
+	}
+	return nil
+}

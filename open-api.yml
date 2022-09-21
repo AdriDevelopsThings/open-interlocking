@@ -23,7 +23,7 @@ components:
       properties:
         name:
           type: string
-        reversed:
+        reserved:
           type: boolean
         state:
           type: boolean
@@ -70,7 +70,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DistantSignal"
-        reversed:
+        reserved:
           type: boolean
         length:
           type: integer
@@ -275,6 +275,41 @@ paths:
               schema:
                 type: string
                 description: RailroadConnectionWrongStateError
-
+  /block/occupy/{from}/{to}:
+    post:
+      summary: Occupy the block 'to'
+      tags:
+        - Blocks
+      operationId: occupy_block
+      parameters:
+        - name: from
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Block or switch
+            example: B1
+        - name: to
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Block or switch
+            example: 1W1
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Success
+        404:
+          description: Object wasn't found
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error description = Object wasn't found.
                 
         

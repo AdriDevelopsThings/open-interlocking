@@ -3,15 +3,15 @@ An open source self hosted interlocking (simulation). For example you can use op
 
 ## Translation table
 The language of this project is english but you could know some german words:
-| German word  | English word                                                                            |
-| ------------ | --------------------------------------------------------------------------------------- |
-| Stellwerk    | interlocking                                                                          |
-| Vorsignal    | distant signal                                                                          |
-| Weiche       | railroad switch                                                                         |
-| Bloecke      | blocks (blocks are occupiable parts of a track)                                         |
-| Subbloecke   | subblocks (one subblock per block for each direction (the same block will be reversed)) |
-| Fahrstrasse  | a connection between two signals over railroad switches and blocks                      |
-| Gleisbild    | track diagram                                                                           |
+| German word | English word                                                                            |
+| ----------- | --------------------------------------------------------------------------------------- |
+| Stellwerk   | interlocking                                                                            |
+| Vorsignal   | distant signal                                                                          |
+| Weiche      | railroad switch                                                                         |
+| Bloecke     | blocks (blocks are occupiable parts of a track)                                         |
+| Subbloecke  | subblocks (one subblock per block for each direction (the same block will be reserved)) |
+| Fahrstrasse | a connection between two signals over railroad switches and blocks                      |
+| Gleisbild   | track diagram                                                                           |
 
 
 ## Templating
@@ -87,6 +87,7 @@ There is a swagger/openapi specification: open-api.yml.
 | GET    | /connection/:signal1/:signal2 | Get the connection between signal 1 and signal 2. (signal1 and signal2 are the name of the signal)       | take a look at the open api specification. |
 | POST   | /connection/:signal1/:signal2 | Set a connection between these two signals.                                                              | take a look at the open api specification. |
 | DELETE | /connection/:signal1/:signal2 | Desolve the connection between these two signals.                                                        | take a look at the open api specification. |
+| POST   | /block/occupy/:from/:to       | Occupy the block 'to' (switch or block e.g. W1 or B1)                                                    | 'success'                                  |
 
 ### RailroadConnection state
 connection.state is integer with this value:

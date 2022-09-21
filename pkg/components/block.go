@@ -2,7 +2,8 @@ package components
 
 type Block struct {
 	Name     string `json:"name"`
-	Reversed bool   `json:"reversed"`
+	Reserved bool   `json:"reserved"`
+	Occupied bool   `json:"occupied"`
 	Length   int    `json:"length"`
 }
 
@@ -45,4 +46,36 @@ func GetSubBlockFromBlock(block *Block, starting_switch *RailroadSwitch, startin
 		}
 	}
 	return nil
+}
+
+func OccupyBlock(
+	from_block *Block,
+	from_switch *RailroadSwitch,
+	to_block *Block,
+	to_switch *RailroadSwitch,
+) {
+	if from_block != nil {
+		from_block.Occupied = false
+	}
+
+	if from_switch != nil {
+		from_switch.Occupied = false
+	}
+
+	if to_block != nil {
+		to_block.Occupied = true
+	}
+
+	if to_switch != nil {
+		to_switch.Occupied = true
+	}
+
+	signal := GetSignalByFollowingBlock(from_block, from_switch, to_block, to_switch)
+	if signal != nil {
+		connection := GetConnectionByEndingSignal(signal)
+		if connection != nil {
+			connection.Desolve()
+		}
+	}
+
 }
