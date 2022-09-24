@@ -24,6 +24,14 @@ func UpdateBlockOccupied(w http.ResponseWriter, req *http.Request) {
 
 	from := params["from"]
 	to := params["to"]
+	raw_action := params["action"]
+	var action components.OccupyBlockAction
+	switch raw_action {
+	case "join":
+		action = components.JoinNextBlock
+	case "leave":
+		action = components.LeaveNextBlock
+	}
 
 	if strings.HasPrefix(from, "B") {
 		from_block = components.GetBlockByName(from)
@@ -41,6 +49,6 @@ func UpdateBlockOccupied(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, ObjectNotFoundError.Name, ObjectNotFoundError.Http_error)
 		return
 	}
-	components.OccupyBlock(from_block, from_switch, to_block, to_switch)
+	components.OccupyBlock(from_block, from_switch, to_block, to_switch, action)
 	w.Write([]byte("success"))
 }

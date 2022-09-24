@@ -112,3 +112,12 @@ connection.state is integer with this value:
 | 2       | Connection waiting until the signals/distant signals acknowledged |
 | 3       | Connection set                                                    |
 | 4       | Connection desolving                                              |
+
+### Block / Switch reserved
+block.reserved / switch.reserved is integer with this value:
+| Integer | State                                                     |
+| ------- | --------------------------------------------------------- |
+| 0       | Block is not reserved                                     |
+| 1       | Block is reserving (waiting until the connection is set ) |
+| 2       | Block is reserved for a connection                        |
+| 3       | Block is occupied by a train                              |

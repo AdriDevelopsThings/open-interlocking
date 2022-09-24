@@ -1,17 +1,23 @@
 package components
 
 type ReservedType = uint
+type OccupyBlockAction = uint
 
 const (
 	NotReserved = iota
 	Reserving
 	Reserved
+	Occupied
+)
+
+const (
+	JoinNextBlock = iota
+	LeaveNextBlock
 )
 
 type Block struct {
 	Name     string `json:"name"`
 	Reserved uint   `json:"reserved"`
-	Occupied bool   `json:"occupied"`
 	Length   int    `json:"length"`
 }
 
@@ -61,28 +67,32 @@ func OccupyBlock(
 	from_switch *RailroadSwitch,
 	to_block *Block,
 	to_switch *RailroadSwitch,
+	action OccupyBlockAction,
 ) {
-	if from_block != nil {
-		from_block.Occupied = false
+	if action == JoinNextBlock {
+		if to_block != nil {
+			to_block.Reserved = Occupied
+		}
+
+		if to_switch != nil {
+			to_switch.Reserved = Occupied
+		}
 	}
 
-	if from_switch != nil {
-		from_switch.Occupied = false
-	}
+	if action == LeaveNextBlock {
+		if from_block != nil {
+			from_block.Reserved = NotReserved
+		}
 
-	if to_block != nil {
-		to_block.Occupied = true
-	}
-
-	if to_switch != nil {
-		to_switch.Occupied = true
-	}
-
-	signal := GetSignalByFollowingBlock(from_block, from_switch, to_block, to_switch)
-	if signal != nil {
-		connection := GetConnectionByEndingSignal(signal)
-		if connection != nil {
-			connection.Desolve()
+		if from_switch != nil {
+			from_switch.Reserved = NotReserved
+		}
+		signal := GetSignalByFollowingBlock(from_block, from_switch, to_block, to_switch)
+		if signal != nil {
+			connection := GetConnectionByEndingSignal(signal)
+			if connection != nil {
+				connection.Desolve()
+			}
 		}
 	}
 

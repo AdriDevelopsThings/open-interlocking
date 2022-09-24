@@ -47,13 +47,13 @@ func (connection *RailroadConnection) Desolve() bool {
 
 func (connection *RailroadConnection) checkForOccupiedBlocks() bool {
 	for _, block := range connection.Blocks {
-		if block.Occupied {
+		if block.Reserved == Occupied {
 			return true
 		}
 	}
 
 	for _, rswitch := range connection.Switches {
-		if rswitch.Occupied {
+		if rswitch.Reserved == Occupied {
 			return true
 		}
 	}

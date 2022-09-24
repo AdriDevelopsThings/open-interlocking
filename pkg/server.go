@@ -13,7 +13,7 @@ func RunServer(host string) {
 	rtr.HandleFunc("/connection/{signal1:[a-zA-Z\\d]+}/{signal2:[a-zA-Z\\d]+}", api.Connection).Methods("GET", "POST", "DELETE")
 	rtr.HandleFunc("/connection/{signal1:[a-zA-Z\\d]+}/{signal2:[a-zA-Z\\d]+}/delete", api.ConnectionDelete).Methods("POST")
 	rtr.HandleFunc("/{kind:[a-z_]+}/{name:[a-zA-Z\\d]+}", api.GetState).Methods("GET", "POST")
-	rtr.HandleFunc("/block/occupy/{from:[WB]\\d+}/{to:[WB]\\d+}", api.UpdateBlockOccupied).Methods("POST")
+	rtr.HandleFunc("/block/occupy/{from:[WB]\\d+}/{to:[WB]\\d+}/{action:join|leave}", api.UpdateBlockOccupied).Methods("POST")
 	rtr.HandleFunc("/fullcomponents", api.FullComponents).Methods("GET")
 	http.Handle("/", rtr)
 	fmt.Printf("Started http server: %q\n", host)
