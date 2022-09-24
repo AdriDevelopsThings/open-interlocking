@@ -94,14 +94,14 @@ The following permissions are available:
 
 There is a swagger/openapi specification: open-api.yml.
 
-| Method | Path                          | Description                                                                                              | Response                                   |
-| ------ | ----------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| GET    | /:kind/:name                  | Get the current state of a signal, distant_signal or switch                                              | true or false                              |
-| POST   | /:kind/:name                  | Acknowledge the current_state. (first GET the state, be sure you set the signal before acknowledging it) | true or false (state)                      |
-| GET    | /connection/:signal1/:signal2 | Get the connection between signal 1 and signal 2. (signal1 and signal2 are the name of the signal)       | take a look at the open api specification. |
-| POST   | /connection/:signal1/:signal2 | Set a connection between these two signals.                                                              | take a look at the open api specification. |
-| DELETE | /connection/:signal1/:signal2 | Desolve the connection between these two signals.                                                        | take a look at the open api specification. |
-| POST   | /block/occupy/:from/:to       | Occupy the block 'to' (switch or block e.g. W1 or B1)                                                    | 'success'                                  |
+| Method | Path                            | Description                                                                                              | Response                                   |
+| ------ | ------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| GET    | /:kind/:name                    | Get the current state of a signal, distant_signal or switch                                              | true or false                              |
+| POST   | /:kind/:name                    | Acknowledge the current_state. (first GET the state, be sure you set the signal before acknowledging it) | true or false (state)                      |
+| GET    | /connection/:signal1/:signal2   | Get the connection between signal 1 and signal 2. (signal1 and signal2 are the name of the signal)       | take a look at the open api specification. |
+| POST   | /connection/:signal1/:signal2   | Set a connection between these two signals.                                                              | take a look at the open api specification. |
+| DELETE | /connection/:signal1/:signal2   | Desolve the connection between these two signals.                                                        | take a look at the open api specification. |
+| POST   | /block/occupy/:from/:to/:action | Occupy the block 'to' (switch or block e.g. W1 or B1) (action = join or leave)                           | 'success'                                  |
 
 ### RailroadConnection state
 connection.state is integer with this value:
