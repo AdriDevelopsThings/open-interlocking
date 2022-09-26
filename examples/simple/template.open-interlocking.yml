@@ -1,8 +1,6 @@
 distant_signals:
   V1:
   V3:
-  V7:
-  V8:
 
 signals:
   S1: 
@@ -15,12 +13,6 @@ signals:
   S4:
   S5:
   S6:
-  S7:
-    distant_signals:
-      - V7
-  S8:
-    distant_signals:
-      - V8
 
 switches:
   W1:
@@ -29,7 +21,6 @@ switches:
 blocks:
   B1:
   B2:
-  B3: 
 
 subblocks:
   B1a:
@@ -44,12 +35,6 @@ subblocks:
   B2b:
     start: W2
     end: S6
-  B3a:
-    start: S8
-    end:  S1
-  B3b:
-    start: W1
-    end: S7
 
 relations:
   signals:
@@ -69,10 +54,6 @@ relations:
     S6:
       following: W1
       previous: B2b
-    S7:
-      previous: B3b
-    S8:
-      following: B3a
   switches:
     W1:
       previous: S1
