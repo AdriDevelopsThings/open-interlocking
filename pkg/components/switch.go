@@ -1,5 +1,7 @@
 package components
 
+import "github.com/adridevelopsthings/open-interlocking/pkg/config"
+
 type RailroadSwitch struct {
 	Name string `json:"name"`
 
@@ -20,7 +22,7 @@ type RailroadSwitch struct {
 func (railroad_switch *RailroadSwitch) Set(state bool) {
 	if state != railroad_switch.State {
 		railroad_switch.State = state
-		railroad_switch.Acknowledged = false
+		railroad_switch.Acknowledged = config.IgnoreAcknowledgements
 	}
 }
 

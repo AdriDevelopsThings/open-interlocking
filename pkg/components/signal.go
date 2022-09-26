@@ -1,5 +1,7 @@
 package components
 
+import "github.com/adridevelopsthings/open-interlocking/pkg/config"
+
 type DistantSignal struct {
 	Name         string `json:"name"`
 	State        bool   `json:"state"`
@@ -23,14 +25,14 @@ type Signal struct {
 func (signal *Signal) Set(state bool) {
 	if state != signal.State {
 		signal.State = state
-		signal.Acknowledged = false
+		signal.Acknowledged = config.IgnoreAcknowledgements
 	}
 }
 
 func (distant_signal *DistantSignal) Set(state bool) {
 	if state != distant_signal.State {
 		distant_signal.State = state
-		distant_signal.Acknowledged = false
+		distant_signal.Acknowledged = config.IgnoreAcknowledgements
 	}
 }
 

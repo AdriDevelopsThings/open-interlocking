@@ -12,7 +12,7 @@ const (
 
 const (
 	JoinNextBlock = iota
-	LeaveNextBlock
+	LeavePreviousBlock
 )
 
 type Block struct {
@@ -79,7 +79,7 @@ func OccupyBlock(
 		}
 	}
 
-	if action == LeaveNextBlock {
+	if action == LeavePreviousBlock {
 		if from_block != nil {
 			from_block.Reserved = NotReserved
 		}
@@ -89,6 +89,7 @@ func OccupyBlock(
 		}
 		signal := GetSignalByFollowingBlock(from_block, from_switch, to_block, to_switch)
 		if signal != nil {
+			signal.Set(false)
 			connection := GetConnectionByEndingSignal(signal)
 			if connection != nil {
 				connection.Desolve()

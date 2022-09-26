@@ -160,7 +160,7 @@ func GetConnectionByID(id string) *RailroadConnection {
 
 func GetConnectionBySignals(signal1 *Signal, signal2 *Signal) *RailroadConnection {
 	for index, connection := range serverRailroadConnections {
-		if connection.StartingSignal == signal1 && connection.EndingSignal == signal2 {
+		if connection.State != ConnectionNotSet && connection.StartingSignal == signal1 && (signal2 == nil || connection.EndingSignal == signal2) {
 			return &serverRailroadConnections[index]
 		}
 	}

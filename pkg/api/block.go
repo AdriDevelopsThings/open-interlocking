@@ -30,7 +30,7 @@ func UpdateBlockOccupied(w http.ResponseWriter, req *http.Request) {
 	case "join":
 		action = components.JoinNextBlock
 	case "leave":
-		action = components.LeaveNextBlock
+		action = components.LeavePreviousBlock
 	}
 
 	if strings.HasPrefix(from, "B") {
@@ -45,7 +45,7 @@ func UpdateBlockOccupied(w http.ResponseWriter, req *http.Request) {
 		to_switch = components.GetSwitchByName(to)
 	}
 
-	if (from_block == nil && from_switch == nil) || (to_block == nil && to_switch == nil) {
+	if (from_block == nil && from_switch == nil && from != "-") || (to_block == nil && to_switch == nil && to != "-") {
 		http.Error(w, ObjectNotFoundError.Name, ObjectNotFoundError.Http_error)
 		return
 	}
