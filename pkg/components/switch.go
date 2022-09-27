@@ -10,6 +10,8 @@ type RailroadSwitch struct {
 	FollowingBlockBendingBlade   *Block          `json:"-"`
 	FollowingSwitchBendingBlade  *RailroadSwitch `json:"-"`
 
+	FollowingDifferentDirectionBlock *Block `json:"-"`
+
 	PreviousSignal *Signal         `json:"-"`
 	PreviousBlock  *Block          `json:"-"`
 	PreviousSwitch *RailroadSwitch `json:"-"`

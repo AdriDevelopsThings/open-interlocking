@@ -373,13 +373,19 @@ func PathFinding(
 				switchState = true
 			} else if rswitch != nil && next_switch.FollowingSwitchStraightBlade != rswitch {
 				switchState = true
+			} else if signal != nil && next_switch.FollowingBlockBendingBlade != nil && next_switch.FollowingBlockBendingBlade == signal.PreviousBlock.Block {
+				switchState = true
 			}
 			connection.SwitchesStates = append(connection.SwitchesStates, switchState)
 			d1 := false
 			if next_switch.PreviousSwitch != nil && (next_switch.PreviousSwitch.PreviousSwitch != nil && next_switch.PreviousSwitch.PreviousSwitch == next_switch.PreviousSwitch) {
 				d1 = true
 			}
-			return PathFinding(GetSubBlockFromBlock(next_switch.PreviousBlock, next_switch, nil), next_switch.PreviousSwitch, nil, find, connection, d1)
+			prev_block := next_switch.PreviousBlock
+			if next_switch.FollowingDifferentDirectionBlock != nil {
+				prev_block = next_switch.FollowingDifferentDirectionBlock
+			}
+			return PathFinding(GetSubBlockFromBlock(prev_block, next_switch, nil), next_switch.PreviousSwitch, nil, find, connection, d1)
 		}
 	}
 	return returnPathNotExist(connection)

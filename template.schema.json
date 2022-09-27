@@ -104,6 +104,10 @@
                             },
                             "following_bending_blade": {
                                 "$ref": "#/definitions/switches_relation"
+                            },
+                            "following_different_direction": {
+                                "type": "string",
+                                "pattern": "B\\d+"
                             }
                         },
                         "required": ["previous", "following_straight_blade", "following_bending_blade"]

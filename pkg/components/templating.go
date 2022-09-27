@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/adridevelopsthings/open-interlocking/pkg/config"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,9 +26,10 @@ type SignalRelationsConfig struct {
 }
 
 type SwitchRelationsConfig struct {
-	Previous               string `yaml:"previous"`
-	FollowingStraightBlade string `yaml:"following_straight_blade"`
-	FollowingBendingBlade  string `yaml:"following_bending_blade"`
+	Previous                    string `yaml:"previous"`
+	FollowingStraightBlade      string `yaml:"following_straight_blade"`
+	FollowingBendingBlade       string `yaml:"following_bending_blade"`
+	FollowingDifferentDirection string `yaml:"following_different_direction"`
 }
 
 type RelationsConfig struct {
@@ -87,30 +89,36 @@ func ParseRelationsConfig(config *RelationsConfig) {
 				GetSwitchByName(name).FollowingBlockBendingBlade = GetBlockByName(rswitch.FollowingBendingBlade)
 			}
 		}
+
+		if rswitch.FollowingDifferentDirection != "" {
+			if strings.HasPrefix(rswitch.FollowingDifferentDirection, "B") {
+				GetSwitchByName(name).FollowingDifferentDirectionBlock = GetBlockByName(rswitch.FollowingDifferentDirection)
+			}
+		}
 	}
 }
 
-func ParseTemplateConfig(config *TemplateConfig) {
-	for name := range config.DistantSignals {
-		distant_signals = append(distant_signals, DistantSignal{Name: name})
+func ParseTemplateConfig(template_config *TemplateConfig) {
+	for name := range template_config.DistantSignals {
+		distant_signals = append(distant_signals, DistantSignal{Name: name, Acknowledged: config.IgnoreAcknowledgements})
 	}
-	for name, signal := range config.Signals {
+	for name, signal := range template_config.Signals {
 		ds := make([]*DistantSignal, len(signal.DistantSignals))
 		for index, name := range signal.DistantSignals {
 			ds[index] = GetDistantSignalByName(name)
 		}
-		signals = append(signals, Signal{Name: name, DistantSignals: ds})
+		signals = append(signals, Signal{Name: name, DistantSignals: ds, Acknowledged: config.IgnoreAcknowledgements})
 	}
 
-	for name := range config.Switches {
-		switches = append(switches, RailroadSwitch{Name: name})
+	for name := range template_config.Switches {
+		switches = append(switches, RailroadSwitch{Name: name, Acknowledged: config.IgnoreAcknowledgements})
 	}
 
-	for name := range config.Blocks {
+	for name := range template_config.Blocks {
 		blocks = append(blocks, Block{Name: name})
 	}
 
-	for name, block := range config.Subblocks {
+	for name, block := range template_config.Subblocks {
 		subblocks = append(subblocks, SubBlock{Name: name})
 		blockName := make([]rune, 0)
 		for _, element := range name {
@@ -136,7 +144,7 @@ func ParseTemplateConfig(config *TemplateConfig) {
 		}
 		subblocks[len(subblocks)-1].DistantSignals = ds
 	}
-	ParseRelationsConfig(&config.Relations)
+	ParseRelationsConfig(&template_config.Relations)
 
 }
 
